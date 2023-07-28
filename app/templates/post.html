@@ -1,0 +1,308 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: white;
+  opacity: .2; /* Firefox */
+
+}
+
+  .comment {
+    position: absolute;
+    right: 20px;
+    margin-bottom: 30px;
+  }
+
+  .comment__p {
+    font-size: calc(var(--index));
+  }
+
+  .comment-textarea {
+    background-color: #b5b0a1;
+    border: 1px solid;
+    border-radius: 3px;
+    font-size: calc(var(--index) * .89);
+  }
+
+  .add-comment {
+    font-size: calc(var(--index) * .8);
+    display: block;
+    margin-top: 5px;
+    width: calc(var(--index) * 7);
+    height: calc(var(--index) * 1.3);
+    border-radius: 3px;
+    background-color: #cecbc5;
+  }
+
+  .comments {
+    max-width: 550px;
+    min-height: 10vh;
+    margin-top: calc(var(--index) * 8);
+  }
+
+  .comment__ap {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease-in-out;
+}
+
+.comment__ap:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.comments__h1 {
+  font-size: calc(var(--index) * 1.1);
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+
+
+</style>
+    <div class="save-post">
+    </div>
+    <div class="post" style="min-height: calc(var(--index) * 25);">
+        <h2 class="post__h2">{{ post.header }}</h2>
+            <div class="description">
+                <img class="post__img" src="{{ post.post_avatar.url }}">
+                <p>{{ post.text|linebreaks }}</p>
+                <input type="hidden" class="hidden-key" value="{{ post.key }}">
+            </div>
+    </div>
+
+    <div class="likes" style="min-height: 200px; padding: 40px 10px 10px;">
+        {% if user.is_authenticated %}
+            {% if like %}
+                <form method="post" class="like">
+                    {% csrf_token %}
+                    <button name="like" type="submit" style="outline: none;border: 0;background: transparent;cursor: pointer;"><img src="{% static 'form/liked.png' %}" alt="" class="like-icon"></button>
+                </form>
+            {% else %}
+            <form method="post" class="like">
+                {% csrf_token %}
+                <button name="like" type="submit" style="outline: none;border: 0;background: transparent;cursor: pointer;"><img src="{% static 'form/nliked.png' %}" alt="" class="like-icon"></button>
+            </form>
+            {% endif %}
+        {% else %}
+            <a href="{% url 'home' %}profile/login" class="like"><img src="{% static 'form/nliked.png' %}" alt="" class="like-icon"></a>
+        {% endif %}
+        <span style="font-size: 2.5vh;margin-left: 10px;">Нравится: <span class="total_likes">{{ total_likes.count }}</span></span>
+
+        {% if user.is_authenticated %}
+          {% if not post.owner.username == user.username %}
+          {% if not test %}
+          <form method="post" class="subscribe-form">
+            {% csrf_token %}
+            <input type="hidden" class="sbc" value="{{ post.owner.username }}">
+            <button class="subscribe" style="padding: 5px 10px;margin-top: 10px;cursor: pointer;background: transparent;background-color: #c26d67;font-size: 20px;float: left;border-radius: 5px;">Subscribe</button>
+          </form>
+          {% else %}
+          <form method="post" class="subscribe-form">
+            {% csrf_token %}
+            <input type="hidden" class="sbc" value="{{ post.owner.username }}">
+            <button class="subscribe" style="padding: 5px 10px;margin-top: 10px;cursor: pointer;background: transparent;background-color: #403e3e;font-size: 20px;float: left;border-radius: 5px;">Subscribed</button>
+          </form>
+          {% endif %}
+          {% endif %}
+        {% endif %}  
+        <p class="count_subs" style="font-size: 20px;margin-top: 70px;">{{ subsc.count }} Subscribers</p>
+        <div class="comment">
+            <p class="comment__p">Add comment</p>
+            <form method="post" class="form_comment">
+                {% csrf_token %}
+                <textarea class="comment-textarea" name="" id="" cols="50" rows="7"></textarea>
+                <button class="add-comment" type="submit" name="add_comment">Publication</button>
+            </form>
+        </div>
+
+    </div>
+
+        <div class="comments">
+            {% for c in comments %}
+            <div class="comment__ap">
+                <div class="comment__header">
+                  <h1 class="comments__h1">{{ c.owner.username }}</h1>
+                </div>
+                <div class="comment__content">
+                  <p class="comments__p">{{ c.comment|linebreaks }}</p>
+                  {% if c.owner == user %}
+                    <form method="post" class="delete-comment">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{ c.key }}" class="hidden-key__comment">
+                        <input type="hidden" value="{{ c.post.header }}" class="hidden-post_name__comment">
+                        <input type="hidden" value="{{ c.comment }}" class="hidden-comment_text__comment">
+                        <button type="submit" style="float: right;margin: -55px 0px 10px;outline: none;border: 0;background: transparent;cursor: pointer;"><img src="{% static 'icon/trash.png' %}"></button>
+                    </form>
+                  {% endif %}
+                </div>
+              </div>
+            {% endfor %}
+        </div>
+
+
+
+    <script>
+
+        formLikes = document.querySelector('.like')
+
+formLikes.addEventListener('submit', (e) => {
+	e.preventDefault();
+	var xhr = new XMLHttpRequest();
+	const token = document.querySelectorAll("input[name='csrfmiddlewaretoken']")
+	xhr.open('POST', '/like/');
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.setRequestHeader('X-CSRFToken', token[0].value);
+
+	header = document.querySelector('.post__h2').textContent;
+	key = document.querySelector('.hidden-key').value;
+
+	xhr.onload = function() {
+		console.log(xhr.status)
+		if (xhr.status === 200) {
+			response = JSON.parse(xhr.response);
+			console.log(response['post'])
+			if (response['post'] == true) {
+				document.querySelector('.like-icon').src = "{% static 'form/liked.png' %}"
+			} else {
+                document.querySelector('.like-icon').src = "{% static 'form/nliked.png' %}"
+            }
+            document.querySelector('.total_likes').textContent = response['total_likes']
+		};
+	};
+
+	
+	xhr.send('header=' + encodeURIComponent(header) + '&key=' + key);
+});
+
+
+
+document.addEventListener('submit', (e) => {
+  if (e.target && e.target.matches('.delete-comment')) {
+    e.preventDefault();
+
+    const parent = e.target.parentNode;
+
+    const token = e.target.querySelector("input[name='csrfmiddlewaretoken']").value;
+    const key = e.target.querySelector('.hidden-key__comment').value;
+    const post = e.target.querySelector('.hidden-post_name__comment').value;
+    const comment_text = e.target.querySelector('.hidden-comment_text__comment').value;
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/delete_comment/');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.setRequestHeader('X-CSRFToken', token);
+
+    xhr.onload = function() {
+      if(xhr.status == 200){
+        const response = JSON.parse(xhr.response);
+        console.log(response)
+        parent.parentNode.remove();
+      }
+    }
+
+    xhr.send('key=' + key + '&header=' + post + '&text=' + comment_text);
+  }
+});
+
+
+
+form_comment1 = document.querySelector('.form_comment');
+
+form_comment1.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    var xhr = new XMLHttpRequest();
+
+	const token = form_comment1.querySelector("input[name='csrfmiddlewaretoken']");
+
+	console.log(token.value)
+
+	xhr.open('POST', '/comment/');
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.setRequestHeader('X-CSRFToken', token.value);
+
+    text = document.querySelector('.comment-textarea').value;
+    header = document.querySelector('.post__h2').textContent;
+	  key = document.querySelector('.hidden-key').value;
+    owner = '{{ user.username }}'
+
+    xhr.onload = function(){
+        if(xhr.status === 200){
+            response = JSON.parse(xhr.response);
+            console.log(response)
+            const where = document.querySelector('.comments')
+            const newComment = document.createElement('div')
+            newComment.className = 'comment__ap'
+            newComment.innerHTML = `
+                <div class='comment__header'>
+                  <h1 class='comments__h1'>${ owner }</h1>
+                </div>
+                <div class='comment__content'>
+                  <p class='comments__p'>${ text }</p>
+                  {% if user %}
+                    <form method="post" class="delete-comment">
+                        {% csrf_token %}
+                        <input type="hidden" value="${response['key']}" class="hidden-key__comment">
+                        <input type="hidden" value="${response['post']}" class="hidden-post_name__comment">
+                        <input type="hidden" value="${text}" class="hidden-comment_text__comment">
+                        <button type="submit" style="float: right;margin: -55px 0px 10px;outline: none;border: 0;background: transparent;cursor: pointer;"><img src="{% static 'icon/trash.png' %}"></button>
+                    </form>
+                  {% endif %}
+                </div>
+            `
+            where.appendChild(newComment);
+            
+            
+        }
+    }
+
+    if(text.length >= 10){
+        xhr.send('text=' + encodeURIComponent(text) + '&header=' + encodeURIComponent(header) + '&key=' + encodeURIComponent(key))
+    } else {
+        console.log('no!!')
+        document.querySelector('.comment-textarea').value = ''
+        document.querySelector('.comment-textarea').setAttribute('placeholder', 'min text lenght 20')
+    }
+})
+
+subscribe_form = document.querySelector('.subscribe-form');
+
+subscribe_form.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  xhr = new XMLHttpRequest();
+
+  sbr = document.querySelector('.sbc').value;
+  token = document.querySelectorAll("input[name='csrfmiddlewaretoken']");
+
+	xhr.open('POST', '/subscribe/');
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xhr.setRequestHeader('X-CSRFToken', token[1].value);
+
+  xhr.onload = function() {
+    if(xhr.status == 200) {
+      response = JSON.parse(xhr.response)
+      document.querySelector('.count_subs').innerHTML = response['success'] + ' Subscribers';
+      if (document.querySelector('.subscribe').innerHTML == 'Subscribed') {
+        document.querySelector('.subscribe').innerHTML = 'Subscribe';
+        document.querySelector('.subscribe').style.backgroundColor = '#c26d67';
+      }
+      else {
+        document.querySelector('.subscribe').innerHTML = 'Subscribed';
+        document.querySelector('.subscribe').style.backgroundColor = '#403e3e'; 
+      }
+    }
+  }
+
+  
+  xhr.send('sbc=' + sbr);
+})
+
+    </script>
+{% endblock %} 

@@ -1,0 +1,137 @@
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+body {
+	background-color: #bebbb5;
+}
+
+:root {
+	--index: calc(1vh + 1vw);
+}
+
+@font-face {
+	font-family: relaway;
+	src: url(../fonts/raleway-regular.woff2);
+}
+
+.main-header {
+	height: 45px;
+	width: 100%;
+	background-color: #24221f;
+	position: fixed;
+	font-family: relaway;
+	z-index: 5;
+}
+
+.header-links-left {
+	white-space: nowrap;
+	position: absolute;
+	margin-top: 6px;
+}
+
+.header-links-right {
+	float: right;
+	margin-right: 10px;
+	margin-top: 0px;
+}
+
+.li {
+	display: inline;
+	margin-left: 20px;
+	font-size: calc(var(--index) * 0.9);
+}
+
+.links {
+	color: #e3d8d8;
+	text-decoration: none;
+}
+
+.search {
+	margin-left: 30px;
+	height: calc(var(--index) * 1);
+	border-radius: 7px;
+	background-color: #c9c4c3;
+}	
+
+.submit-search {
+	background-color: #706b6b;
+	font-size: calc(var(--index) * 0.9);
+	border-radius: 5px;
+	color: #faeded;
+}
+
+.about-project {
+	text-align: center;
+	width: 100%;
+	background-image: url('../image/image.jpg');
+	background-repeat: round;
+	height: calc(var(--index) * 30);
+}
+
+
+.about-desc {
+	position: relative;
+	top: calc(var(--index) * 15);
+	color: #e9e0d2;
+	font-size: calc(var(--index) * 1.4);
+}
+
+.body-header__h1 {
+	color: #272521;
+	text-align: center;
+	margin-top: 20px;
+	font-family: relaway;
+}
+
+.body-header__p {
+	color: #161512;
+	font-size: calc(var(--index) * 2);
+	text-align: center;
+	margin-top: 5px;
+}
+
+.body-header {
+	height: 150px;
+	border-bottom: 1px solid;
+	align-items: center;
+}
+
+.description-icon {
+	display: flex;
+	justify-content: space-around;
+	margin-top: 30px;
+	margin-bottom: 70px;
+}
+
+.description-icon__img {
+	height: calc(var(--index) * 8);
+}
+
+.icon-div p {
+	margin-top: 7px;
+	text-align: center;
+	font-size: calc(var(--index) * 1.3);
+	font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	color: #584949;
+}
+
+.main-footer {
+	background-color: #161512;
+	color: #bebbb5;
+	display: flex;
+	justify-content: space-around;
+}
+
+.main-footer li {
+	list-style-type: none;
+	font-size: calc(var(--index) * 1);
+	margin-top: 15px;
+}
+
+.main-footer > * {
+	margin-top: 20px;
+	margin-bottom: 20px;
+}

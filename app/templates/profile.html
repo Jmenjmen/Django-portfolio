@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .my-posts {
+        z-index: 12;
+        margin-top: -70px;
+        margin-bottom: -60px;
+        margin-left: calc(-40% - 50px);
+        width: 40%;
+        height: 100vh;
+        overflow-y: scroll;
+        background-color: rgb(78, 73, 66);
+        transition: .7s;
+    }
+
+    .post {
+        width: 100%;
+        min-height: 130px;
+        background-color: rgb(173, 160, 160);
+        margin-bottom: 5px;
+    }
+
+    .post__h1 {
+        color: #2e2929;
+    }
+
+    .post__img {
+        float: left;
+        height: 100px;
+        width: 90px;
+        margin-left: 5px;
+        margin-top: 5px;
+    }
+
+    .post__a {
+        float: right;
+        margin-top: 20px;
+        margin-right: 25px;
+        text-decoration: none;
+        border: 2px solid #a76227;
+        padding: 6px;
+        background-color: #a76227;
+        color: #ccdbf1;
+    }
+
+    .show_posts {
+        position: absolute;
+        transition: .7s;
+    }
+
+    .show {
+        background: transparent;
+        background-color: transparent;
+        border: medium none;
+        cursor: pointer;
+    }
+
+    .icon {
+        width: 32px;
+        transition: .7s;
+    }
+
+    .info {
+        z-index: -1;
+        width: 100%;
+        position: absolute;
+        top: 45px;
+        height: 100px;
+        background-image: url('https://preview.redd.it/desktop-aesthetic-wallpaper-1920-1080-v0-d2hd73xxwvaa1.jpg?auto=webp&s=04ca7dae27f9c74b35d8df235f5955dc794df29c');
+        margin-left: -50px;
+        text-align: center;
+        color: #312c2c;
+        display: flex;
+    }
+
+    .info__h2 {
+        flex: 1;
+        margin-top: 30px;
+        font-family: relaway;
+    }
+
+    .my-subscribers {
+        z-index: 0;
+        position: absolute;
+        top: 40%;
+        left: 43%;
+        right: 43%;
+        text-decoration: none;
+        font-size: 20px;
+        background-color: #888181;
+        padding: 10px;
+        border-radius: 6px;
+    }
+
+    .show-subscribers {
+        z-index: -1;
+        overflow-y: scroll;
+        scrollbar-width: thin;
+        scrollbar-color: hsl(0 0% 50%);
+        position: absolute;
+        top: 50%;
+        left: 35%;
+        right: 35%;
+        text-decoration: none;
+        font-size: 20px;
+        background-color: #888181;
+        padding: 10px;
+        border-radius: 6px;
+        max-height: 400px;
+        transition: .5s;
+        display: none;
+    }
+
+</style>
+    <div class="show_posts">
+        <button class="show"><img src="{% static 'icon/menu.png' %}" alt="" class="icon"></button>
+    </div>
+    <div class="my-posts">
+        {% for p in myPosts %}
+        <div class="post">
+            <img src="{{ p.post_avatar.url }}" alt="" class="post__img">
+            <h1 class="post__h1">{{ p.header }}</h1>
+            <p class="post__p">{{ p.text|truncatechars:50 }}</p>
+            <a href="{% url 'post' p.header %}?k={{ p.key }}" class="post__a">Read more...</a>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="info">
+        <h2 class="info__h2">You have {{ subscribers.count }} subscribers</h2>
+        <h2 class="info__h2">You have {{ likes.count }} likes</h2>
+        <h2 class="info__h2">You have {{ myPosts.count }} posts</h2>
+    </div>
+
+    <div style="text-align: center;position: absolute;left: 0;right: 0;top: 200px;" class="make-link">
+        <a style="text-decoration: none;background-color: #a28d8d;padding: 15px 25px;border-radius: 4px;color: #312c2c;font-size: 20px;" href="{% url 'make' %}" class="make-post">Make post</a>
+    </div>
+
+    <div class="subscribers">
+        <button class="my-subscribers">I subsrcibed</button>
+        <div class="show-subscribers">
+            {% for s in subsribed.subscribed.all %}
+            <p style="padding-bottom: 5px;">{{ s }}</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+    posts = document.querySelector('.my-posts');
+    full = document.body.offsetWidth;
+    res = full / 100 * 35 + 71; 
+    posts.style.marginLeft = -(res - (-40)) + 'px';
+    document.querySelector('.show_posts').style.left = 0;
+
+        btn = document.querySelector('.show')
+        btn.addEventListener('click', () => {
+            posts = document.querySelector('.my-posts');
+            console.log(posts.style.marginLeft)
+            if (document.querySelector('.show_posts').style.left.indexOf(0) < 0){
+                full = document.body.offsetWidth;
+                res = full / 100 * 35 + 71; 
+                posts.style.marginLeft = -(res - (-40)) + 'px';
+                document.querySelector('.show_posts').style.left = 0;
+                document.querySelector('.icon').style.rotate = 0 + 'deg';
+            } else {
+                posts.style.marginLeft = -50 + 'px';
+                full = document.body.offsetWidth;
+                target = 40;
+                res = full / 100 * 35 + 36; 
+                document.querySelector('.show_posts').style.left = res+'px';
+                document.querySelector('.icon').style.rotate = 90 + 'deg';
+            }
+            
+        })
+
+        subc = document.querySelector('.my-subscribers');
+        subc.addEventListener('click', () => {
+            show =document.querySelector('.show-subscribers')
+            if (show.style.display == 'none') {
+                show.style.display = 'block'
+                
+            } else {
+                show.style.display = 'none'
+            }
+        })
+    </script>
+{% endblock %}

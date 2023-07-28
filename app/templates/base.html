@@ -1,0 +1,70 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Portfolio</title>
+
+	<link rel="stylesheet" href="{% static 'css/style-base.css' %}">
+	<link rel="stylesheet" href="{% static 'css/posts.css' %}">
+
+</head>
+<body>
+
+		<header class="main-header">
+		<div class="left-header">
+		<ul class="header-links-left">
+			<li class="li"><a class="links" href="{% url 'posts' %}">Posts</a></li>
+			{% if user.is_authenticated %}
+			<li class="li"><a class="links" href="{% url 'myProfile' %}">My Profile</a></li>
+			{% endif %}
+			<li class="li"><a class="links" href="#">third </a></li>
+			<li class="li"><a class="links" href="#">four</a></li>
+			<li class="li"><a class="links" href="#">five</a></li>
+			<li class="li"><input class="search" name="search" type="text">
+				 <button class="submit-search">search</button>
+			</li>
+		</ul>
+		</div>
+		<div class="right-header">
+			<ul class="header-links-right">
+				{% if user.is_authenticated %}
+				<li class="li"><img style="height: 25px;z-index: 999;position: relative;top: 7px;" src="{{ profile.avatar.url }}" alt=""></li>
+				<li class="li"><a class="links" href="{% url 'myProfile' %}">My profile</a></li>
+				<li class="li"><a href="{% url 'home' %}profile/logout" class="links">Logout</a></li>
+				{% else %}
+				<li class="li"><a class="links" href="{% url 'home' %}profile/signup">Register</a></li>
+				<li class="li"><a href="{% url 'home' %}profile/login" class="links">Login</a></li>
+				{% endif %}
+			</ul>
+		</div>
+	</header>
+	
+	<div class="div">
+		{% block content %}
+		{% endblock %}
+	</div>
+	
+
+	<footer class="main-footer">
+		<div class="footer-information">
+			<ul class="ul-footer">
+				<li class="li-footer"><p>Maked by Artem</p></li>
+				<li class="li-footer"><p>Portfolio</p></li>
+			</ul>
+		</div>
+		<div class="footer-contacts">
+			<ul class="ul-contacts-footer">
+				<li class="li-contacts"><p>Contact number +420725074061</p></li>
+				<li class="li-contacts"><p>Email: mrbread030@gmail.com</p></li>
+				<li class="li-contacts"><p>Address: Opava</p></li>
+			</ul>
+		</div>
+	</footer>
+
+	
+</body>
+</html>

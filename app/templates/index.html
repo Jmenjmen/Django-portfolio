@@ -1,0 +1,101 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Portfolio</title>
+
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<script src="{% static 'libs/gsap/gsap.min.js' %}" defer></script>
+	<script src="{% static 'libs/gsap/ScrollSmoother.min.js' %}" defer></script>
+	<script src="{% static 'libs/gsap/ScrollTrigger.min.js' %}" defer></script>
+	<script src="{% static 'js/app.js' %}" defer></script>
+</head>
+<body>
+
+<div class="wrapper">
+	<div class="content">
+		<header class="main-header">
+		<div class="left-header">
+		<ul class="header-links-left">
+			<li class="li"><a class="links" href="{% url 'posts' %}">Posts</a></li>
+			{% if user.is_authenticated %}
+			<li class="li"><a class="links" href="{% url 'myProfile' %}">My Profile</a></li>
+			{% endif %}
+			<li class="li"><a class="links" href="#">third </a></li>
+			<li class="li"><a class="links" href="#">four</a></li>
+			<li class="li"><a class="links" href="#">five</a></li>
+			<li class="li"><input class="search" name="search" type="text">
+				 <button class="submit-search">search</button>
+			</li>
+		</ul>
+		</div>
+		<div class="right-header">
+			<ul class="header-links-right">
+				{% if user.is_authenticated %}
+				<li class="li"><img style="height: 25px;z-index: 999;position: relative;top: 7px;" src="{{ profile.avatar.url }}" alt=""></li>
+				<li class="li"><a class="links" href="{% url 'myProfile' %}">My profile</a></li>
+				<li class="li"><a href="{% url 'home' %}profile/logout" class="links">Logout</a></li>
+				{% else %}
+				<li class="li"><a class="links" href="{% url 'home' %}profile/signup">Register</a></li>
+				<li class="li"><a href="{% url 'home' %}profile/login" class="links">Login</a></li>
+				{% endif %}
+			</ul>
+		</div>
+	</header>
+	
+	<div class="about-project">
+		<div class="about-desc">
+			<h1 data-speed="1.3">About me</h1>
+			<p data-speed="1.1">My name is Artem and i'm the starter programmer on django</p>
+			<p data-speed="1.1">And i hope what you can rate my skill and give me a chance</p>
+		</div>
+	</div>
+
+	<div class="main-body">
+		<div class="body-header">
+			<h1 class="body-header__h1">Find a post for yourself</h1>
+			<p class="body-header__p">On this site you can find a posts for yourself</p>
+		</div>
+		<div class="body-description">
+			<div class="description-icon">
+				<div class="icon-div">
+					<img class="description-icon__img" src="{% static 'icon/heart.png' %}" alt="alt">
+					<p>Like your favorite posts</p>
+				</div>
+				<div class="icon-div">
+					<img class="description-icon__img" src="{% static 'icon/article.png' %}" alt="alt">
+					<p>Make a posts</p>
+				</div>
+				<div class="icon-div">
+					<img class="description-icon__img" src="{% static 'icon/save.png' %}" alt="alt">
+					<p>Save the posts</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<footer class="main-footer">
+		<div class="footer-information">
+			<ul class="ul-footer">
+				<li class="li-footer"><p>Maked by Artem</p></li>
+				<li class="li-footer"><p>Portfolio</p></li>
+			</ul>
+		</div>
+		<div class="footer-contacts">
+			<ul class="ul-contacts-footer">
+				<li class="li-contacts"><p>Contact number +420725074061</p></li>
+				<li class="li-contacts"><p>Email: mrbread030@gmail.com</p></li>
+				<li class="li-contacts"><p>Address: Opava</p></li>
+			</ul>
+		</div>
+	</footer>
+	</div>
+</div>
+
+	
+</body>
+</html>

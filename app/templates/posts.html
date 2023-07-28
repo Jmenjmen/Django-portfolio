@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    {% for p in posts %}
+    <div class="posts">
+        <a href="{% url 'post' p.header %}?k={{ p.key }}">
+        <img class="posts__img" src="{{ p.post_avatar.url }}">
+        </a>
+        <h2><a href="{% url 'post' p.header %}?k={{ p.key }}">{{ p.header }}</a></h2>
+        <p>{{ p.text|truncatechars:70 }}</p>
+    </div>
+    {% endfor %}
+
+    <div class="pages">
+        {% for page in posts.paginator.page_range %}
+        <a class="pagination_page" href="{% url 'posts' %}?p={{ page }}">{{ page }}</a>
+        {% endfor %}
+    </div>
+
+{% endblock %}
